@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Law & Ethics Quiz - ANS. Mira Algryani</title>
+    <style>
+        :root {
+            --burgundy: #6D1A36;
+            --burgundy-dark: #4A0E23;
+            --bg-soft: #FAF6F7;
+            --card-bg: #FFFFFF;
+            --text-main: #2B1E22;
+            --text-muted: #6E5D62;
+            --border-color: #E6D5DA;
+            --correct-bg: #E8F5E9;
+            --correct-border: #2E7D32;
+            --correct-text: #1B5E20;
+            --wrong-bg: #FFEBEE;
+            --wrong-border: #C62828;
+            --wrong-text: #B71C1C;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-soft); color: var(--text-main); line-height: 1.6; padding: 20px 15px 60px; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%); color: #FFFFFF; padding: 32px 28px; border-radius: 16px; text-align: center; box-shadow: 0 8px 24px rgba(109, 26, 54, 0.15); margin-bottom: 24px; }
+        .header .faculty { font-size: 0.85rem; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.9; margin-bottom: 8px; }
+        .header h1 { font-size: 1.85rem; margin-bottom: 6px; font-weight: 700; }
+        .header .subtitle { font-size: 1rem; opacity: 0.92; }
+        .status-bar { position: sticky; top: 10px; z-index: 100; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 20px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+        .stats-group { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.95rem; font-weight: 600; }
+        .stat-badge { background: var(--bg-soft); color: var(--burgundy); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .progress-wrapper { width: 100%; height: 8px; background-color: #EFE5E8; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: var(--burgundy); transition: width 0.3s ease; }
+        .student-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px 22px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .student-box label { font-weight: 600; color: var(--burgundy); }
+        .student-box input { flex: 1; min-width: 220px; padding: 10px 14px; border: 1.5px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; outline: none; }
+        .student-box input:focus { border-color: var(--burgundy); }
+        .question-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(109, 26, 54, 0.03); }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .q-number { background: var(--burgundy); color: #fff; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+        .q-topic { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .q-text { font-size: 1.08rem; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 13px 16px; background: #FFFFFF; border: 1.5px solid var(--border-color); border-radius: 10px; cursor: pointer; font-size: 0.98rem; color: var(--text-main); transition: all 0.2s ease; }
+        .option-btn:hover:not(:disabled) { background: var(--bg-soft); border-color: var(--burgundy); transform: translateX(3px); }
+        .option-btn:disabled { cursor: default; }
+        .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-soft); color: var(--burgundy); font-weight: 700; font-size: 0.85rem; flex-shrink: 0; border: 1px solid var(--border-color); }
+        .option-btn.correct { background-color: var(--correct-bg); border-color: var(--correct-border); color: var(--correct-text); font-weight: 600; }
+        .option-btn.correct .opt-letter { background-color: var(--correct-border); color: #FFFFFF; border-color: var(--correct-border); }
+        .option-btn.wrong { background-color: var(--wrong-bg); border-color: var(--wrong-border); color: var(--wrong-text); }
+        .option-btn.wrong .opt-letter { background-color: var(--wrong-border); color: #FFFFFF; border-color: var(--wrong-border); }
+        .feedback-msg { margin-top: 12px; font-size: 0.9rem; font-weight: 600; display: none; padding: 8px 12px; border-radius: 8px; }
+        .feedback-msg.show { display: block; }
+        .feedback-msg.ok { background: var(--correct-bg); color: var(--correct-text); }
+        .feedback-msg.no { background: var(--wrong-bg); color: var(--wrong-text); }
+        .result-panel { background: var(--card-bg); border: 2px solid var(--burgundy); border-radius: 16px; padding: 30px; text-align: center; margin-top: 32px; box-shadow: 0 10px 25px rgba(109, 26, 54, 0.1); }
+        .result-panel h2 { color: var(--burgundy); margin-bottom: 10px; font-size: 1.5rem; }
+        .final-score-circle { width: 130px; height: 130px; border-radius: 50%; background: var(--bg-soft); border: 5px solid var(--burgundy); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 18px auto; }
+        .final-score-circle .percent { font-size: 1.8rem; font-weight: 800; color: var(--burgundy); line-height: 1.1; }
+        .final-score-circle .fraction { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+        .grade-text { font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 20px; }
+        .btn-reset { background: var(--burgundy); color: #FFFFFF; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 10px; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 12px rgba(109, 26, 54, 0.25); }
+        .btn-reset:hover { background: var(--burgundy-dark); transform: translateY(-2px); }
+        .footer-stamp { margin-top: 40px; text-align: center; padding: 20px; border-top: 1px dashed var(--border-color); }
+        .stamp-box { display: inline-block; border: 2px solid var(--burgundy); color: var(--burgundy); padding: 12px 30px; border-radius: 10px; background: #FFFFFF; font-weight: 700; letter-spacing: 0.8px; font-size: 1rem; box-shadow: 0 3px 10px rgba(109, 26, 54, 0.08); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="faculty">Faculty of Medical Technology — Anesthesia & Intensive Care</div>
+        <h1>Medical Law & Ethics Quiz</h1>
+        <div class="subtitle">Lectures 1 & 2: Fundamental Concepts for Healthcare Professionals (40 MCQs)</div>
+    </div>
+    <div class="student-box">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" placeholder="Enter your full name here...">
+    </div>
+    <div class="status-bar">
+        <div class="stats-group">
+            <div class="stat-badge">Answered: <span id="answeredCount">0</span> / 40</div>
+            <div class="stat-badge">Score: <span id="scoreCount">0</span> / 40</div>
+            <div class="stat-badge">Percentage: <span id="percentCount">0%</span></div>
+        </div>
+        <button class="btn-reset" style="padding: 7px 14px; font-size: 0.85rem;" onclick="resetAndShuffle()">↻ Reset & Shuffle</button>
+        <div class="progress-wrapper"><div class="progress-fill" id="progressBar"></div></div>
+    </div>
+    <div id="quizContainer"></div>
+    <div class="result-panel">
+        <h2>Quiz Summary & Final Result</h2>
+        <p id="studentResultLabel" style="color: var(--text-muted); font-weight: 600;"></p>
+        <div class="final-score-circle">
+            <div class="percent" id="finalPercent">0%</div>
+            <div class="fraction" id="finalFraction">0 / 40</div>
+        </div>
+        <div class="grade-text" id="gradeFeedback">Answer all 40 questions to see your final evaluation!</div>
+        <button class="btn-reset" onclick="resetAndShuffle()">↻ Reset & Shuffle for Next Student</button>
+    </div>
+    <div class="footer-stamp">
+        <div class="stamp-box">Prepared by ANS. Mira Algryani</div>
+    </div>
+</div>
+<script>
+    const questionsData = [
+        { topic: "Legal System", q: "What is the core definition of a Legal System?", options: ["A binding framework of rules created and enforced by government institutions", "Voluntary moral suggestions developed solely by hospital staff", "Informal habits practiced within private medical clinics", "Philosophical theories regarding human happiness and virtue"], answer: 0 },
+        { topic: "Legal System", q: "Which of the following is a primary goal of the general legal system?", options: ["Maximizing financial revenue for private healthcare facilities", "Regulating society, protecting citizens, and maintaining order", "Replacing clinical protocols with personal physician preferences", "Eliminating all biological risks associated with surgery"], answer: 1 },
+        { topic: "Legal System", q: "In the healthcare sector, how does 'Standard Setting' serve as a legal purpose?", options: ["It sets the maximum salary allowed for intensive care specialists", "It determines the architectural layout of operating rooms", "It defines minimum clinical care levels expected from professionals", "It eliminates the need for informed consent in emergencies"], answer: 2 },
+        { topic: "Legal System", q: "Which purpose of healthcare law establishes clear liability for medical errors?", options: ["Patient Autonomy", "Professional Empathy", "Moral Voluntariness", "Legal Accountability"], answer: 3 },
+        { topic: "Legal System", q: "How does the healthcare legal system directly contribute to 'Patient Protection'?", options: ["By preventing clinical malpractice through enforceable rules", "By guaranteeing a 100% cure rate for every admitted patient", "By concealing minor surgical mistakes from hospital records", "By allowing patients to prescribe their own anesthetic drugs"], answer: 0 },
+        { topic: "Sources of Law", q: "Which source of healthcare law consists of written official acts passed by Parliament or a national legislature?", options: ["Administrative Law", "Statutory Law", "Case / Common Law", "Hospital Internal Norms"], answer: 1 },
+        { topic: "Sources of Law", q: "Public Health Statutes issued by the national legislature are a direct example of:", options: ["Case Law", "Administrative Law", "Statutory Law", "Bioethical Guidelines"], answer: 2 },
+        { topic: "Sources of Law", q: "What is the primary role of Administrative Law in healthcare?", options: ["To overturn judicial precedents made by supreme courts", "To establish moral virtues like mercy and compassion", "To pass new constitutional amendments through Parliament", "To set regulations through government agencies that enforce statutory laws"], answer: 3 },
+        { topic: "Sources of Law", q: "Ministry of Health guidelines and regulations belong to which source of law?", options: ["Administrative Law", "Statutory Law", "Common Law", "Criminal Case Precedents"], answer: 0 },
+        { topic: "Sources of Law", q: "How is Case Law (Common Law) created?", options: ["Through ministerial decrees issued by health agencies", "Through legal precedents established by judicial court decisions", "Through public referendums voted on by hospital patients", "Through international medical textbook publications"], answer: 1 },
+        { topic: "Sources of Law", q: "Judicial rulings and court decisions in medical malpractice lawsuits form the basis of:", options: ["Statutory Law", "Administrative Law", "Case / Common Law", "Professional Norms"], answer: 2 },
+        { topic: "Introduction to Ethics", q: "How is 'Ethics' defined in the context of healthcare foundations?", options: ["A set of government penalties including fines and imprisonment", "Hospital billing regulations for intensive care services", "Surgical protocols for administering general anesthesia", "The science studying right and wrong behavior"], answer: 3 },
+        { topic: "Introduction to Ethics", q: "Freedom, Justice, and Mercy are classified under which ethical concept?", options: ["Values", "Statutory Rules", "Administrative Decrees", "Tort Damages"], answer: 0 },
+        { topic: "Introduction to Ethics", q: "What does the term 'Norms' refer to in medical ethics?", options: ["Written criminal statutes passed by Parliament", "Socially expected patterns of professional conduct", "Financial compensation awarded to injured patients", "Laboratory reference ranges for blood tests"], answer: 1 },
+        { topic: "Introduction to Ethics", q: "Treating every patient with respect and empathy directly upholds which core aspect of Medical Ethics?", options: ["Legal Liability", "Statutory Enforcement", "Human Dignity", "Administrative Regulation"], answer: 2 },
+        { topic: "Introduction to Ethics", q: "As a practical discipline, what does Medical Ethics primarily analyze?", options: ["The cost-effectiveness of anesthesia machines", "Courtroom procedures for filing civil lawsuits", "Tax exemptions for public healthcare institutions", "Ethical issues in clinical practice and research"], answer: 3 },
+        { topic: "4 Core Pillars", q: "Which pillar of bioethics grants a patient the legal and moral right to accept or refuse treatment?", options: ["Autonomy", "Beneficence", "Non-Maleficence", "Justice"], answer: 0 },
+        { topic: "4 Core Pillars", q: "What does the bioethical principle of 'Beneficence' require from healthcare professionals?", options: ["Distributing ventilators based strictly on patient wealth", "Actively promoting patient well-being and acting in their best interest", "Following the patient's family wishes even if they harm the patient", "Avoiding all medical interventions that carry any statistical risk"], answer: 1 },
+        { topic: "4 Core Pillars", q: "The Latin maxim 'Primum non nocere' (First, do no harm) represents which pillar of bioethics?", options: ["Autonomy", "Justice", "Non-Maleficence", "Confidentiality"], answer: 2 },
+        { topic: "4 Core Pillars", q: "Avoiding clinical risks caused by ignorance or negligence is a direct duty under:", options: ["Justice", "Autonomy", "Truth-telling", "Non-Maleficence"], answer: 3 },
+        { topic: "4 Core Pillars", q: "Fair distribution of healthcare resources and providing equal care without discrimination defines:", options: ["Justice", "Non-Maleficence", "Beneficence", "Voluntariness"], answer: 0 },
+        { topic: "Informed Consent", q: "Which of the following is a derived rule of Patient Autonomy?", options: ["Imprisonment for refusal of care", "Confidentiality and Truth-telling", "Unilateral physician decision-making", "Elimination of alternative treatments"], answer: 1 },
+        { topic: "Informed Consent", q: "What are the three mandatory elements on the Informed Consent Checklist?", options: ["Duty, Breach, and Causation", "Statutory, Administrative, and Case Law", "Disclosure, Capacity, and Voluntariness", "Justice, Mercy, and Empathy"], answer: 2 },
+        { topic: "Informed Consent", q: "In the Informed Consent checklist, what does 'Disclosure' require the clinician to do?", options: ["Share the patient's diagnosis with their employer", "Force the patient to sign a waiver before explaining the surgery", "Publish the patient's medical records in a journal", "Explain risks, benefits, and alternatives clearly to the patient"], answer: 3 },
+        { topic: "Informed Consent", q: "Which element of Informed Consent ensures the patient is mentally capable of understanding their choices?", options: ["Capacity", "Disclosure", "Voluntariness", "Accountability"], answer: 0 },
+        { topic: "Informed Consent", q: "Obtaining a patient's consent freely without coercion, manipulation, or pressure satisfies which condition?", options: ["Disclosure", "Voluntariness", "Capacity", "Beneficence"], answer: 1 },
+        { topic: "Law vs. Ethics", q: "How does the nature of Medical Law differ from Healthcare Ethics?", options: ["Medical Law consists of optional suggestions, while Ethics are mandatory statutes", "Both are enforced exclusively by hospital ethics committees", "Medical Law consists of mandatory statutory rules, while Ethics are moral principles", "Healthcare Ethics carries prison sentences, while Medical Law only brings guilt"], answer: 2 },
+        { topic: "Law vs. Ethics", q: "Who enforces Medical Law versus Healthcare Ethics?", options: ["Courts enforce Ethics; religious leaders enforce Medical Law", "Patients enforce Medical Law; insurance companies enforce Ethics", "Ministry of Health enforces Ethics; police enforce Ethics", "Courts & government enforce Medical Law; self & professional boards enforce Ethics"], answer: 3 },
+        { topic: "Law vs. Ethics", q: "Which penalties are associated with violating Medical Law?", options: ["Fines, license loss, and imprisonment", "Only personal guilt and mild peer disapproval", "Loss of patient trust without any legal action", "Mandatory attendance at an ethics seminar only"], answer: 0 },
+        { topic: "Law vs. Ethics", q: "What is the primary goal of Healthcare Ethics compared to Medical Law?", options: ["To maintain only the minimum baseline of public safety", "To strive for optimal moral care", "To collect financial fines from negligent hospitals", "To establish criminal liability in court"], answer: 1 },
+        { topic: "Malpractice & Negligence", q: "How is 'Medical Negligence' defined?", options: ["An unavoidable complication despite following all protocols", "A patient's refusal to take prescribed medication", "Failure to meet the accepted medical standard of care", "A disagreement between two specialists on a diagnosis"], answer: 2 },
+        { topic: "Malpractice & Negligence", q: "Which formula accurately defines 'Medical Malpractice'?", options: ["Unfavorable Outcome + Patient Complaint = Medical Malpractice", "High Risk Surgery + Informed Consent = Medical Malpractice", "Breach of Ethics + Loss of Trust = Medical Malpractice", "Negligence + Proven Injury = Medical Malpractice"], answer: 3 },
+        { topic: "Malpractice Elements", q: "Which of the following is NOT one of the 4 Elements of a Malpractice Claim?", options: ["Intentional Malice", "Duty of Care", "Breach", "Causation"], answer: 0 },
+        { topic: "Malpractice Elements", q: "When is the first element of malpractice, 'Duty of Care', established?", options: ["When a doctor walks past a stranger on the street", "When a provider-patient relationship is established", "Only after a surgical complication occurs", "When a court issues a final financial verdict"], answer: 1 },
+        { topic: "Malpractice Elements", q: "Which element of a malpractice claim requires proving that the provider's breach directly led to the patient's injury?", options: ["Duty of Care", "Damages", "Causation", "Voluntariness"], answer: 2 },
+        { topic: "Malpractice Elements", q: "What does the fourth element of malpractice, 'Damages', refer to?", options: ["Broken surgical instruments in the operating theater", "The hospital's damaged public reputation", "The legal fees paid to defense attorneys", "Actual compensable harm suffered by the patient"], answer: 3 },
+        { topic: "Common Errors & Prevention", q: "Administering an incorrect anesthetic dosage or leaving foreign objects inside a patient's body are examples of:", options: ["Surgical & Anesthesia Errors", "Administrative Law enforcement", "Ethical Beneficence", "Valid Informed Consent"], answer: 0 },
+        { topic: "Common Errors & Prevention", q: "Which of the following falls under 'Diagnostic & Medication Errors'?", options: ["Operating on the wrong limb", "Misdiagnosis, delayed diagnosis, or prescribing the wrong drug", "Leaving surgical gauze inside the abdomen", "Over-documenting patient vital signs"], answer: 1 },
+        { topic: "Common Errors & Prevention", q: "What does the golden rule of medical documentation state in malpractice prevention?", options: ["Document only when a complication takes place", "Keep verbal notes rather than written records for privacy", "If it isn't recorded, it never happened", "Erase errors completely without leaving a trace"], answer: 2 },
+        { topic: "Common Errors & Prevention", q: "Which strategy helps healthcare professionals prevent medical malpractice?", options: ["Avoiding explanations of treatment risks to prevent patient anxiety", "Relying solely on outdated clinical practices from decades ago", "Skipping informed consent during routine anesthesia procedures", "Clear communication, following standard of care, and continuous medical education"], answer: 3 }
+    ];
+
+    let currentQuestions = [], score = 0, answered = 0;
+
+    function shuffleArray(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuiz() {
+        score = 0; answered = 0; updateStats();
+        currentQuestions = questionsData.map((item, qIdx) => ({
+            id: qIdx + 1,
+            topic: item.topic,
+            q: item.q,
+            options: shuffleArray(item.options.map((optText, optIdx) => ({ text: optText, isCorrect: optIdx === item.answer })))
+        }));
+        renderQuiz();
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+        currentQuestions.forEach((item, qIndex) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            let optionsHTML = '';
+            item.options.forEach((opt, optIndex) => {
+                optionsHTML += `<button class="option-btn" onclick="selectOption(${qIndex}, ${optIndex})"><span class="opt-letter">${letters[optIndex]}</span><span>${opt.text}</span></button>`;
+            });
+            card.innerHTML = `<div class="q-header"><span class="q-number">Question ${qIndex + 1} of 40</span><span class="q-topic">${item.topic}</span></div><div class="q-text">${item.q}</div><div class="options-list" id="opts-${qIndex}">${optionsHTML}</div><div class="feedback-msg" id="fb-${qIndex}"></div>`;
+            container.appendChild(card);
+        });
+    }
+
+    function selectOption(qIndex, selectedOptIndex) {
+        const question = currentQuestions[qIndex];
+        const buttons = document.getElementById(`opts-${qIndex}`).querySelectorAll('.option-btn');
+        const feedbackEl = document.getElementById(`fb-${qIndex}`);
+        if (buttons[0].disabled) return;
+        answered++;
+        const isUserCorrect = question.options[selectedOptIndex].isCorrect;
+        buttons.forEach((btn, idx) => {
+            btn.disabled = true;
+            if (question.options[idx].isCorrect) btn.classList.add('correct');
+            else if (idx === selectedOptIndex && !isUserCorrect) btn.classList.add('wrong');
+        });
+        if (isUserCorrect) {
+            score++;
+            feedbackEl.textContent = "✓ Correct Answer!";
+            feedbackEl.className = "feedback-msg show ok";
+        } else {
+            const correctOpt = question.options.find(o => o.isCorrect);
+            feedbackEl.textContent = `✕ Incorrect. Correct answer: ${correctOpt.text}`;
+            feedbackEl.className = "feedback-msg show no";
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        const total = currentQuestions.length || 40;
+        const percentage = Math.round((score / total) * 100);
+        document.getElementById('answeredCount').textContent = answered;
+        document.getElementById('scoreCount').textContent = score;
+        document.getElementById('percentCount').textContent = `${percentage}%`;
+        document.getElementById('progressBar').style.width = `${Math.round((answered / total) * 100)}%`;
+        document.getElementById('finalPercent').textContent = `${percentage}%`;
+        document.getElementById('finalFraction').textContent = `${score} / ${total}`;
+        const studentName = document.getElementById('studentName').value.trim();
+        document.getElementById('studentResultLabel').textContent = studentName ? `Student: ${studentName}` : '';
+        const gradeEl = document.getElementById('gradeFeedback');
+        if (answered === 0) gradeEl.textContent = "Answer the questions above to calculate your score automatically.";
+        else if (answered < total) gradeEl.textContent = `In progress... (${total - answered} questions remaining)`;
+        else if (percentage >= 90) gradeEl.textContent = "🌟 Excellent! Outstanding mastery of Medical Law & Ethics.";
+        else if (percentage >= 75) gradeEl.textContent = "👏 Very Good! Solid understanding of the core concepts.";
+        else if (percentage >= 60) gradeEl.textContent = "✅ Passed! Review the highlighted topics to boost your score.";
+        else gradeEl.textContent = "📚 Needs Review. Study the lecture notes and try again!";
+    }
+
+    document.getElementById('studentName').addEventListener('input', updateStats);
+    function resetAndShuffle() { document.getElementById('studentName').value = ''; initQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    initQuiz();
+</script>
+</body>
+</html>
